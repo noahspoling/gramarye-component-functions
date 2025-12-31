@@ -1,3 +1,16 @@
+#include "gramarye_ecs/ecs.h"
+#include "gramarye_ecs/entity.h"
+#include "gramarye_ecs/component.h"
+
+#ifndef POSITION_H
+typedef struct {
+    int x;
+    int y;
+} Position;
+#define POSITION_H
+#endif
+
+// Now include the function declarations (this will find component-functions header)
 #include "core/position.h"
 
 void Position_add(ECS* ecs, EntityId entity, ComponentTypeId typeId, int x, int y) {

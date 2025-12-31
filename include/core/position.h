@@ -4,7 +4,14 @@
 #include "gramarye_ecs/ecs.h"
 #include "gramarye_ecs/entity.h"
 #include "gramarye_ecs/component.h"
-#include "core/position.h"
+
+#ifndef POSITION_H
+#define POSITION_H
+typedef struct {
+    int x;
+    int y;
+} Position;
+#endif
 
 // Add position component to entity
 void Position_add(ECS* ecs, EntityId entity, ComponentTypeId typeId, int x, int y);

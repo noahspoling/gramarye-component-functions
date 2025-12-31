@@ -1,4 +1,4 @@
-#include "core/bar_value.h"
+#include "core/bar_value.h"  // BarValue struct from gramarye-components
 #include <stddef.h> 
 #include <stdbool.h>
 #include "raylib.h"

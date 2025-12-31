@@ -119,15 +119,19 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(gramarye_ecs)
 
 # Fetch gramarye-components (for component struct definitions)
-FetchContent_Declare(
-    gramarye_components
-    GIT_REPOSITORY "https://github.com/noahspoling/gramarye-components.git"
-    GIT_TAG "main"
-    GIT_PROGRESS TRUE
-    GIT_SHALLOW TRUE
-)
-
-FetchContent_MakeAvailable(gramarye_components)
+# Only fetch if not already added by parent project
+if(NOT TARGET gramarye-components)
+    FetchContent_Declare(
+        gramarye_components
+        GIT_REPOSITORY "https://github.com/noahspoling/gramarye-components.git"
+        GIT_TAG "main"
+        GIT_PROGRESS TRUE
+        GIT_SHALLOW TRUE
+    )
+    FetchContent_MakeAvailable(gramarye_components)
+else()
+    message(STATUS "gramarye-components already available (added by parent project)")
+endif()
 
 # Collect source files from enabled folders
 set(ALL_COMPONENT_FUNCTION_SRC_FILES "")
@@ -152,16 +156,12 @@ add_library(gramarye-component-functions
     ${ALL_COMPONENT_FUNCTION_SRC_FILES}
 )
 
-# Add include directory
+# Add component-functions include directory first (so our headers are found)
+# Then add gramarye-components (for struct definitions when needed)
 target_include_directories(gramarye-component-functions PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:$<TARGET_PROPERTY:gramarye-components,INTERFACE_INCLUDE_DIRECTORIES>>
     $<INSTALL_INTERFACE:include>
-)
-
-# Make gramarye-components headers available to component-functions
-# This allows component-functions headers to include "core/position.h" etc.
-target_include_directories(gramarye-component-functions PRIVATE
-    $<TARGET_PROPERTY:gramarye-components,INTERFACE_INCLUDE_DIRECTORIES>
 )
 
 # Link against dependencies
@@ -178,19 +178,25 @@ target_link_libraries(gramarye-component-functions PUBLIC
 # target_link_libraries(gramarye-component-functions PUBLIC raylib)
 
 # Export for CMake
-include(GNUInstallDirs)
-install(TARGETS gramarye-component-functions
-    EXPORT componentFunctionsTargets
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
+# Note: Skip export if raylib dependency exists (since FetchContent raylib isn't exported)
+# This library is typically used via FetchContent/subdirectory, so export is optional
+option(GRAMARYE_COMPONENT_FUNCTIONS_INSTALL "Install gramarye-component-functions" OFF)
 
-install(EXPORT componentFunctionsTargets
-    FILE componentFunctionsTargets.cmake
-    NAMESPACE gramarye-component-functions::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/component-functions
-)
+if(GRAMARYE_COMPONENT_FUNCTIONS_INSTALL)
+    include(GNUInstallDirs)
+    install(TARGETS gramarye-component-functions
+        EXPORT componentFunctionsTargets
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )
+
+    install(EXPORT componentFunctionsTargets
+        FILE componentFunctionsTargets.cmake
+        NAMESPACE gramarye-component-functions::
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/component-functions
+    )
+endif()
 
 # For FetchContent compatibility
 if(NOT TARGET gramarye-component-functions::gramarye-component-functions)

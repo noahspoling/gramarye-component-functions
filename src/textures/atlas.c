@@ -1,4 +1,4 @@
-#include "textures/atlas.h"
+#include "textures/atlas.h"  // Atlas functions header (includes struct definition with raylib types)
 #include "raylib.h"  // For Texture2D, Rectangle, LoadTexture, etc.
 #include "mem.h"
 #include "except.h"

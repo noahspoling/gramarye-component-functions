@@ -4,8 +4,18 @@
 #include "gramarye_ecs/ecs.h"
 #include "gramarye_ecs/entity.h"
 #include "gramarye_ecs/component.h"
-#include "textures/sprite.h"  // Sprite struct from gramarye-components
-#include "textures/atlas.h"  // Full Atlas definition (this file)
+#include "textures/atlas.h"  // Full Atlas definition
+
+// Include Sprite struct definition from gramarye-components
+#ifndef SPRITE_H
+#define SPRITE_H
+// Forward declare Atlas (already included above with full definition)
+typedef struct Atlas Atlas;
+typedef struct {
+    Atlas* atlas;
+    int tile_id;
+} Sprite;
+#endif
 
 // Add sprite component to entity
 void Sprite_add(ECS* ecs, EntityId entity, ComponentTypeId typeId, Atlas* atlas, int tile_id);
