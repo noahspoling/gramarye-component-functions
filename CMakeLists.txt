@@ -118,9 +118,16 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(gramarye_ecs)
 
-# Add gramarye-components as subdirectory (for component struct definitions)
-# Assuming it's a sibling directory
-add_subdirectory(../gramarye-components gramarye-components-build)
+# Fetch gramarye-components (for component struct definitions)
+FetchContent_Declare(
+    gramarye_components
+    GIT_REPOSITORY "https://github.com/noahspoling/gramarye-components.git"
+    GIT_TAG "main"
+    GIT_PROGRESS TRUE
+    GIT_SHALLOW TRUE
+)
+
+FetchContent_MakeAvailable(gramarye_components)
 
 # Collect source files from enabled folders
 set(ALL_COMPONENT_FUNCTION_SRC_FILES "")
