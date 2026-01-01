@@ -105,7 +105,15 @@ FetchContent_Declare(
     GIT_SHALLOW TRUE
 )
 
-FetchContent_MakeAvailable(gramarye_libcore)
+# Check if target already exists (from parent using local modules)
+if(NOT TARGET gramarye-libcore)
+    if(USE_LOCAL_MODULES AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../gramarye-libcore/CMakeLists.txt")
+        message(STATUS "gramarye-component-functions: Using local gramarye-libcore")
+        add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../gramarye-libcore gramarye-libcore)
+    else()
+        FetchContent_MakeAvailable(gramarye_libcore)
+    endif()
+endif()
 
 # Fetch gramarye-ecs
 FetchContent_Declare(
@@ -116,7 +124,15 @@ FetchContent_Declare(
     GIT_SHALLOW TRUE
 )
 
-FetchContent_MakeAvailable(gramarye_ecs)
+# Check if target already exists (from parent using local modules)
+if(NOT TARGET gramarye-ecs)
+    if(USE_LOCAL_MODULES AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../gramarye-ecs/CMakeLists.txt")
+        message(STATUS "gramarye-component-functions: Using local gramarye-ecs")
+        add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../gramarye-ecs gramarye-ecs)
+    else()
+        FetchContent_MakeAvailable(gramarye_ecs)
+    endif()
+endif()
 
 # Fetch gramarye-components (for component struct definitions)
 # Only fetch if not already added by parent project
@@ -128,7 +144,15 @@ if(NOT TARGET gramarye-components)
         GIT_PROGRESS TRUE
         GIT_SHALLOW TRUE
     )
-    FetchContent_MakeAvailable(gramarye_components)
+    # Check if target already exists (from parent using local modules)
+    if(NOT TARGET gramarye-components)
+        if(USE_LOCAL_MODULES AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../gramarye-components/CMakeLists.txt")
+            message(STATUS "gramarye-component-functions: Using local gramarye-components")
+            add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../gramarye-components gramarye-components)
+        else()
+            FetchContent_MakeAvailable(gramarye_components)
+        endif()
+    endif()
 else()
     message(STATUS "gramarye-components already available (added by parent project)")
 endif()
