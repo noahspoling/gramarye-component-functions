@@ -10,7 +10,6 @@ typedef struct {
 #define POSITION_H
 #endif
 
-// Now include the function declarations (this will find component-functions header)
 #include "core/position.h"
 
 void Position_add(ECS* ecs, EntityId entity, ComponentTypeId typeId, int x, int y) {

@@ -1,5 +1,5 @@
-#include "textures/atlas.h"  // Atlas functions header (includes struct definition with raylib types)
-#include "raylib.h"  // For Texture2D, Rectangle, LoadTexture, etc.
+#include "textures/atlas.h"
+#include "raylib.h"
 #include "mem.h"
 #include "except.h"
 #include "table.h"
@@ -28,7 +28,7 @@ Atlas* Atlas_new(int initialCapacity) {
 }
 
 void Atlas_setTexture(Atlas* atlas, char *path) {
-    assert(atlas != NULL || path != NULL); // Ensure atlas and path are not NULL
+    assert(atlas != NULL || path != NULL);
     if (*path == '\0') {
         Except_raise(&Atlas_Uninitialized_Error, __FILE__, __LINE__);
     }
